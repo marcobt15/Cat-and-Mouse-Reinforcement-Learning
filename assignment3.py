@@ -57,6 +57,17 @@ class td_qlearning:
   def __init__(self, directory):
     self.trials = [[['FE', 'E'], ['ED', 'F'], ['FA', 'E'], ['ED', 'D'], ['DA', 'F'], ['FA', 'N'], ['FD', 'D'], ['DE', 'E'], ['ED', 'F'], ['FA', 'D'], ['DD', '-']], [['EA', 'F'], ['FD', 'N'], ['FD', 'D'], ['DA', 'N'], ['DA', 'E'], ['EB', 'D'], ['DB', 'N'], ['DB', 'N'], ['DB', 'F'], ['FB', 'N'], ['FB', 'D'], ['DB', 'E'], ['EB', 'N'], ['EB', 'F'], ['FB', 'D'], ['DB', 'F'], ['FB', 'D'], ['DB', 'F'], ['FB', 'D'], ['DB', 'F'], ['FB', 'N'], ['FB', 'D'], ['DB', 'N'], ['DB', 'E'], ['EB', 'D'], ['DB', 'A'], ['AB', 'B'], ['BB', '-']], [['FE', 'E'], ['EF', 'D'], ['DE', 'E'], ['EF', 'N'], ['ED', 'N'], ['ED', 'C'], ['CF', 'E'], ['ED', 'C'], ['CD', 'B'], ['BD', '-']], [['EB', 'F'], ['FB', 'N'], ['FB', 'E'], ['EB', 'C'], ['CB', 'B'], ['BB', '-']], [['AB', 'D'], ['DB', 'F'], ['FB', 'E'], ['EB', 'D'], ['DB', 'A'], ['AB', 'D'], ['DB', 'F'], ['FB', 'N'], ['FB', 'E'], ['EB', 'C'], ['CB', 'N'], ['CB', 'E'], ['EB', 'F'], ['FB', 'N'], ['FB', 'N'], ['FB', 'D'], ['DB', 'F'], ['FB', 'D'], ['DB', 'E'], ['EB', 'F'], ['FB', 'N'], ['FB', 'E'], ['EB', 'N'], ['EB', 'C'], ['CB', 'B'], ['BB', '-']], [['ED', 'N'], ['EA', 'D'], ['DD', '-']], [['ED', 'C'], ['CD', 'N'], ['CE', 'E'], ['ED', 'C'], ['CA', 'B'], ['BA', '-']], [['EF', 'D'], ['DF', 'F'], ['FD', 'N'], ['FE', 'E'], ['EC', 'F'], ['FC', 'D'], ['DB', 'N'], ['DB', 'F'], ['FB', 'E'], ['EB', 'D'], ['DB', 'A'], ['AB', 'B'], ['BB', '-']], [['FD', 'D'], ['DF', 'F'], ['FD', 'E'], ['EE', '-']], [['FB', 'N'], ['FB', 'D'], ['DB', 'F'], ['FB', 'N'], ['FB', 'D'], ['DB', 'E'], ['EB', 'N'], ['EB', 'F'], ['FB', 'D'], ['DB', 'F'], ['FB', 'E'], ['EB', 'C'], ['CB', 'B'], ['BB', '-']]]
 
+    for trial in self.trials:
+      for i in range(len(trial)-1):
+          state, action = trial[i]
+          next_state = trial[i+1][0]
+
+          curr_q_value = q_function[state][actionToIndex[action]]
+          reward_next_state = self.reward(next_state)
+          best_next_q = max(q_function[next_state])
+
+          q_function[state][actionToIndex[action]] += self.alpha * (reward_next_state + self.gamma * best_next_q - curr_q_value)
+
     return
 
     self.trials = []
@@ -82,18 +93,6 @@ class td_qlearning:
     # Return the optimal action under the learned policy
     return a
    
-  def td_q_function_update(self):
-    for trial in self.trials:
-        for i in range(len(trial)-1):
-            state, action = trial[i]
-            next_state = trial[i+1][0]
-
-            curr_q_value = q_function[state][actionToIndex[action]]
-            reward_next_state = self.reward(next_state)
-            best_next_q = max(q_function[next_state])
-
-            q_function[state][actionToIndex[action]] += self.alpha * (reward_next_state + self.gamma * best_next_q - curr_q_value)
-
   def reward(self, state):
     if state[0] == 'B': 
         return 10
@@ -102,3 +101,11 @@ class td_qlearning:
     else:
         return -1
 
+test = td_qlearning('')
+print(test.policy('FC'))
+print(test.qvalue('FC','N'))
+print(test.qvalue('FC','E'))
+print(test.qvalue('FC','D'))
+
+
+print(test.qvalue('FB','D'))

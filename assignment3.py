@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import sys
 import glob #in python standard library
 
 indexToAction = {
@@ -55,17 +54,17 @@ class td_qlearning:
         return -1
 
   def train(self):
-    for _ in range(20):
+    for _ in range(1000): #1000 was chosen because it leads to convergence and doesn't take too long
       for trial in self.trials:
         for i in range(len(trial)-1):
           state, action = trial[i]
           next_state = trial[i+1][0]
 
           curr_q_value = self.q_function[state][actionToIndex[action]]
-          reward_next_state = self.reward(next_state)
+          current_reward_state = self.reward(state)
           best_next_q = max(self.q_function[next_state])
 
-          new_q = curr_q_value + self.alpha * (reward_next_state + self.gamma * best_next_q - curr_q_value)
+          new_q = curr_q_value + self.alpha * (current_reward_state + self.gamma * best_next_q - curr_q_value)
 
           self.q_function[state][actionToIndex[action]] = new_q
 
@@ -85,6 +84,10 @@ class td_qlearning:
     # Return the optimal action under the learned policy
     return a
   
+
+
+
+  ##REMOVE WHEN SUBMITTING
   def printNicely(self):
     for key, value in self.q_function.items():
       print(key + ": ")
@@ -94,13 +97,13 @@ class td_qlearning:
       print()
       print()
 
-test = td_qlearning("Examples\\Example0\\Trials")
+# test = td_qlearning("Examples\\Example2\\Trials")
 
-print(test.printNicely())
+# print(test.printNicely())
 
 #For example 0
-print(test.policy('EB'))
-print(test.qvalue('DA','E'))
+# print(test.policy('EB')) #D
+# print(test.qvalue('DA','E')) #2.554585136673036
 
 #For example 1
 # print(test.policy('FC'))#D
